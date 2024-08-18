@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
+    private final UserStorage userRepository;
 
     public UserDto get(long id) {
         if (userRepository.get(id).isEmpty()) {

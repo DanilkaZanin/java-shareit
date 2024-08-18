@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemUpdateRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserService;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
-    private final ItemRepository itemRepository;
+    private final ItemStorage itemRepository;
     private final UserService userService;
 
     public ItemDto save(long ownerId, Item item) {
@@ -21,7 +22,7 @@ public class ItemService {
         return itemRepository.create(item);
     }
 
-    public ItemDto update(long ownerId, long itemId, Item item) {
+    public ItemDto update(long ownerId, long itemId, ItemUpdateRequest item) {
         userService.get(ownerId);
         if (itemRepository.get(itemId).isPresent()) {
             return itemRepository.update(ownerId, itemId, item);
@@ -30,8 +31,8 @@ public class ItemService {
     }
 
     public List<ItemDto> search(long ownerId, String text) {
-        userService.get(ownerId);
-        return itemRepository.search(ownerId, text);
+        //userService.get(ownerId);
+        return itemRepository.search(text);
     }
 
     public ItemDto get(long ownerId, long itemId) {

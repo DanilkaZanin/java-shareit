@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemUpdateRequest;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -23,9 +24,9 @@ public class ItemController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{itemId}")
-    public ItemDto patchItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                             @PathVariable("itemId") long itemId,
-                             @RequestBody Item item) {
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId,
+                              @PathVariable("itemId") long itemId,
+                              @RequestBody ItemUpdateRequest item) {
         return itemService.update(userId, itemId, item);
     }
 

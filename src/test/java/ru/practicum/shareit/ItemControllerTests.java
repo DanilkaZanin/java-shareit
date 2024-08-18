@@ -98,9 +98,10 @@ public class ItemControllerTests {
     public void shouldSearchItem() {
         UserDto userDto = userController.saveUser(getUser());
         Item item = getItem();
+        item.setName("new Name");
         ItemDto itemDto = itemController.saveItem(userDto.getId(), item);
 
-        List<ItemDto> getItem = itemController.searchItem(userDto.getId(), itemDto.getName());
+        List<ItemDto> getItem = itemController.searchItem(userDto.getId(), itemDto.getName().toUpperCase());
 
         assertEquals(1, getItem.size());
         assertEquals(itemDto, getItem.getFirst());

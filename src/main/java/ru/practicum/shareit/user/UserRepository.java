@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.NotNullCondition;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateRequest;
 import ru.practicum.shareit.user.model.User;
@@ -18,7 +19,7 @@ public class UserRepository implements UserStorage {
     private long customIdCounter;
 
     private long nextId() {
-        return customIdCounter++;
+        return ++customIdCounter;
     }
 
     @Override
