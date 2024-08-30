@@ -42,7 +42,7 @@ public class ItemRepository implements ItemStorage {
     public List<ItemDto> search(long ownerId, String text) {
         return items.values().stream()
                 .filter(item -> item.getOwnerId() == ownerId)
-                .filter(item -> item.getName().toUpperCase().contains(text))
+                .filter(item -> item.getName().contains(text))
                 .map(item -> modelMapper.map(item, ItemDto.class))
                 .toList();
     }

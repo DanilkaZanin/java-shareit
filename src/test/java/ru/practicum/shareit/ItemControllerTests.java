@@ -100,7 +100,7 @@ public class ItemControllerTests {
         Item item = getItem();
         ItemDto itemDto = itemController.saveItem(userDto.getId(), item);
 
-        List<ItemDto> getItem = itemController.searchItem(userDto.getId(), itemDto.getName().toUpperCase());
+        List<ItemDto> getItem = itemController.searchItem(userDto.getId(), itemDto.getName());
 
         assertEquals(1, getItem.size());
         assertEquals(itemDto, getItem.getFirst());
