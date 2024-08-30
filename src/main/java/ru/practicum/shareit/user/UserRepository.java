@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-public class UserRepository implements UserStorage{
+public class UserRepository implements UserStorage {
     private final Map<Long, User> users;
     private final ModelMapper modelMapper;
     private long customIdCounter;
