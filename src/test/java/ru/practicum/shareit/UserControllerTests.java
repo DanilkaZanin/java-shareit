@@ -6,8 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.UserController;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserRequest;
 import ru.practicum.shareit.user.dto.UserUpdateRequest;
-import ru.practicum.shareit.user.model.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.practicum.shareit.UserEmailConfiguration.email;
@@ -17,27 +17,27 @@ public class UserControllerTests {
     @Autowired
     UserController userController;
 
-    private User getUser() {
-        User user = new User();
-        user.setEmail(email());
-        user.setName("test");
-        return user;
+    private UserRequest getUser() {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail(email());
+        userRequest.setName("test");
+        return userRequest;
     }
 
     @Test
     public void shouldAddUser() {
-        User user = getUser();
-        UserDto userDto = userController.saveUser(user);
+        UserRequest userRequest = getUser();
+        UserDto userDto = userController.saveUser(userRequest);
 
         assertNotNull(userDto);
-        assertEquals(user.getName(), userDto.getName());
-        assertEquals(user.getEmail(), userDto.getEmail());
+        assertEquals(userRequest.getName(), userDto.getName());
+        assertEquals(userRequest.getEmail(), userDto.getEmail());
     }
 
     @Test
     public void shouldUpdateUser() {
-        User user = getUser();
-        UserDto userDto = userController.saveUser(user);
+        UserRequest userRequest = getUser();
+        UserDto userDto = userController.saveUser(userRequest);
 
         UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
         userUpdateRequest.setEmail(userDto.getEmail());
@@ -50,10 +50,10 @@ public class UserControllerTests {
 
     @Test
     public void shouldGetUser() {
-        User user = getUser();
-        UserDto userDto = userController.saveUser(user);
+        UserRequest userRequest = getUser();
+        UserDto userDto = userController.saveUser(userRequest);
 
-        UserDto getUserDto = userController.getUser(user.getId());
+        UserDto getUserDto = userController.getUser(userDto.getId());
 
         assertNotNull(getUserDto);
         assertEquals(userDto, getUserDto);
@@ -61,10 +61,10 @@ public class UserControllerTests {
 
     @Test
     public void shouldDeleteUser() {
-        User user = getUser();
-        UserDto userDto = userController.saveUser(user);
+        UserRequest userRequest = getUser();
+        UserDto userDto = userController.saveUser(userRequest);
 
-        userController.deleteUser(user.getId());
+        userController.deleteUser(userDto.getId());
 
         assertThrows(NotFoundException.class, () -> userController.getUser(userDto.getId()));
     }

@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserRequest;
 import ru.practicum.shareit.user.dto.UserUpdateRequest;
-import ru.practicum.shareit.user.model.User;
 
 @RestController
 @RequestMapping("/users")
@@ -22,8 +22,8 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public UserDto saveUser(@Valid @RequestBody User user) {
-        return userService.save(user);
+    public UserDto saveUser(@Valid @RequestBody UserRequest userRequest) {
+        return userService.save(userRequest);
     }
 
     @PatchMapping("/{userId}")

@@ -23,11 +23,8 @@ public class RepositoryConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
-
-    @Bean
-    public long customCounter() {
-        return 0;
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setPropertyCondition(new NotNullCondition());
+        return modelMapper;
     }
 }

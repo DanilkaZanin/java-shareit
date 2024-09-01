@@ -1,47 +1,38 @@
 package ru.practicum.shareit.user;
 
-import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.NotNullCondition;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserUpdateRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Map;
 import java.util.Optional;
 
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserRepository implements UserStorage {
     private final Map<Long, User> users;
-    private final ModelMapper modelMapper;
-    private long customIdCounter;
+    private long customIdCounter = 0;
 
     private long nextId() {
         return ++customIdCounter;
     }
 
     @Override
-    public Optional<UserDto> get(long id) {
-        return Optional.ofNullable(users.get(id)).map(u -> modelMapper.map(u, UserDto.class));
+    public Optional<User> get(long id) {
+        return Optional.ofNullable(users.get(id));
     }
 
     @Override
-    public UserDto create(User user) {
+    public User create(User user) {
         user.setId(nextId());
         users.put(user.getId(), user);
-        return modelMapper.map(user, UserDto.class);
+        return user;
     }
 
     @Override
-    public UserDto update(long id, UserUpdateRequest userUpdateRequest) {
-        User userToUpdate = users.get(id);
-        modelMapper.getConfiguration().setPropertyCondition(new NotNullCondition());
-        modelMapper.map(userUpdateRequest, userToUpdate);
-
-        users.put(id, userToUpdate);
-        return modelMapper.map(userToUpdate, UserDto.class);
+    public User update(User user) {
+        users.put(user.getId(), user);
+        return user;
     }
 
     @Override
