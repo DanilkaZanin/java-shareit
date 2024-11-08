@@ -1,10 +1,9 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.item;
 
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemRequest;
 import ru.practicum.shareit.user.UserController;
@@ -16,15 +15,18 @@ import java.util.List;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static ru.practicum.shareit.UserEmailConfiguration.email;
+import static ru.practicum.shareit.user.UserEmailConfiguration.email;
 
 @SpringBootTest
-public class ItemRequestControllerTests {
-    @Autowired
-    private ItemController itemController;
-    @Autowired
-    private UserController userController;
+class ItemRequestControllerTests {
+    private final ItemController itemController;
+    private final UserController userController;
 
+    @Autowired
+    public ItemRequestControllerTests(ItemController itemController, UserController userController) {
+        this.itemController = itemController;
+        this.userController = userController;
+    }
 
     private UserRequest getUser() {
         UserRequest userRequest = new UserRequest();
@@ -42,7 +44,7 @@ public class ItemRequestControllerTests {
     }
 
     @Test
-    public void shouldAddItem() {
+     void shouldAddItem() {
         UserDto userDto = userController.saveUser(getUser());
         ItemRequest itemRequest = getItem();
 
@@ -55,7 +57,7 @@ public class ItemRequestControllerTests {
     }
 
     @Test
-    public void shouldPatchItem() {
+     void shouldPatchItem() {
         UserDto userDto = userController.saveUser(getUser());
         ItemRequest itemRequest = getItem();
         itemController.saveItem(userDto.getId(), itemRequest);
@@ -69,7 +71,7 @@ public class ItemRequestControllerTests {
     }
 
     @Test
-    public void shouldGetItem() {
+     void shouldGetItem() {
         UserDto userDto = userController.saveUser(getUser());
         ItemRequest itemRequest = getItem();
         ItemDto itemDto = itemController.saveItem(userDto.getId(), itemRequest);
@@ -80,7 +82,7 @@ public class ItemRequestControllerTests {
     }
 
     @Test
-    public void shouldGetItemsByUserId() {
+     void shouldGetItemsByUserId() {
         UserDto userDto = userController.saveUser(getUser());
         ItemRequest itemRequest1 = getItem();
         ItemRequest itemRequest2 = getItem();
@@ -95,7 +97,7 @@ public class ItemRequestControllerTests {
     }
 
     @Test
-    public void shouldSearchItem() {
+     void shouldSearchItem() {
         UserDto userDto = userController.saveUser(getUser());
         ItemRequest itemRequest = getItem();
         itemRequest.setName("new Name");

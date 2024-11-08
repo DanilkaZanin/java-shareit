@@ -1,19 +1,18 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.UserController;
+import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserRequest;
 import ru.practicum.shareit.user.dto.UserUpdateRequest;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.practicum.shareit.UserEmailConfiguration.email;
+import static ru.practicum.shareit.user.UserEmailConfiguration.email;
 
 @SpringBootTest
-public class UserControllerTests {
+class UserControllerTests {
     @Autowired
     UserController userController;
 
@@ -25,7 +24,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void shouldAddUser() {
+    void shouldAddUser() {
         UserRequest userRequest = getUser();
         UserDto userDto = userController.saveUser(userRequest);
 
@@ -35,7 +34,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void shouldUpdateUser() {
+    void shouldUpdateUser() {
         UserRequest userRequest = getUser();
         UserDto userDto = userController.saveUser(userRequest);
 
@@ -49,7 +48,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void shouldGetUser() {
+    void shouldGetUser() {
         UserRequest userRequest = getUser();
         UserDto userDto = userController.saveUser(userRequest);
 
@@ -60,7 +59,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void shouldDeleteUser() {
+    void shouldDeleteUser() {
         UserRequest userRequest = getUser();
         UserDto userDto = userController.saveUser(userRequest);
 

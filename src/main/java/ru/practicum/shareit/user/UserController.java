@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserRequest;
 import ru.practicum.shareit.user.dto.UserUpdateRequest;
+import ru.practicum.shareit.user.service.UserServiceImpl;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
