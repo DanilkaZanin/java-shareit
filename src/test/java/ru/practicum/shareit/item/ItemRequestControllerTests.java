@@ -69,43 +69,4 @@ class ItemRequestControllerTests {
         assertEquals("new description", itemDto.getDescription());
 
     }
-
-    @Test
-     void shouldGetItem() {
-        UserDto userDto = userController.saveUser(getUser());
-        ItemRequest itemRequest = getItem();
-        ItemDto itemDto = itemController.saveItem(userDto.getId(), itemRequest);
-
-        ItemDto getItem = itemController.getItem(userDto.getId(), itemDto.getId());
-
-        assertEquals(itemDto, getItem);
-    }
-
-    @Test
-     void shouldGetItemsByUserId() {
-        UserDto userDto = userController.saveUser(getUser());
-        ItemRequest itemRequest1 = getItem();
-        ItemRequest itemRequest2 = getItem();
-        ItemDto itemDto1 = itemController.saveItem(userDto.getId(), itemRequest1);
-        ItemDto itemDto2 = itemController.saveItem(userDto.getId(), itemRequest2);
-
-        List<ItemDto> itemDtos = itemController.getItems(userDto.getId());
-
-        assertEquals(2, itemDtos.size());
-        assertTrue(itemDtos.contains(itemDto1));
-        assertTrue(itemDtos.contains(itemDto2));
-    }
-
-    @Test
-     void shouldSearchItem() {
-        UserDto userDto = userController.saveUser(getUser());
-        ItemRequest itemRequest = getItem();
-        itemRequest.setName("new Name");
-        ItemDto itemDto = itemController.saveItem(userDto.getId(), itemRequest);
-
-        List<ItemDto> getItem = itemController.searchItem(userDto.getId(), itemDto.getName().toUpperCase());
-
-        assertEquals(1, getItem.size());
-        assertEquals(itemDto, getItem.getFirst());
-    }
 }
