@@ -86,11 +86,6 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Booking booking = getBooking(bookingId);
-
-        if (!Objects.equals(booking.getBooker().getId(), userId)) {
-            throw new NotBookerException(String.format("User %d is not the owner of the booking", userId));
-        }
-
         return mapper.map(booking, BookingDto.class);
     }
 
@@ -103,7 +98,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional(readOnly = true)
     public List<BookingDto> getCustomerBookings(Long userId, State state) {
         if (!checkUserBuId(userId)) {
-            throw new NotFoundException(String.format("Unavailable customer id %d", userId));
+            throw new NotBookerException(String.format("Unavailable customer id %d", userId));
         }
 
         List<Booking> bookings;

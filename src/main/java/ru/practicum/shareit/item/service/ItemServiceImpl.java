@@ -6,23 +6,23 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingTimeDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.comment.*;
 import ru.practicum.shareit.error.exception.NotAvailableException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.error.exception.UnauthorizedException;
+import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemRequest;
 import ru.practicum.shareit.item.dto.ItemUpdateRequest;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,17 +30,17 @@ import java.util.Optional;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository; // useless?
     private final BookingRepository bookingRepository;
     private final ModelMapper modelMapper;
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
 
-    //нужно ли проверять наличия ownerId при добавлении item
     @Override
     public ItemDto save(Long ownerId, ItemRequest itemRequest) {
         try {
             Item item = modelMapper.map(itemRequest, Item.class);
             item.setOwnerId(ownerId);
-            return modelMapper.map(itemRepository.save(item), ItemDto.class);
+            return itemMapper.toDto(itemRepository.save(item));
         } catch (DataIntegrityViolationException e) {
             throw new NotFoundException("User with id " + ownerId + " does not exist.");
         }
@@ -51,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findById(itemId)
                 .map(item -> {
                     checkOwner(item, ownerId);
-                    return modelMapper.map(itemRepository.save(updateItemFields(item, itemUpdateRequest)), ItemDto.class);
+                    return itemMapper.toDto(itemRepository.save(updateItemFields(item, itemUpdateRequest)));
                 })
                 .orElseThrow(() -> new NotFoundException("Item with id " + itemId + " not found"));
     }
@@ -82,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
             return new ArrayList<>();
         }
         return itemRepository.searchItemsByText(text).stream()
-                .map(item -> modelMapper.map(item, ItemDto.class))
+                .map(itemMapper::toDto)
                 .toList();
     }
 
@@ -92,13 +92,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findItemByIdWithComments(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with id %d and ownerId %d does not exist.", itemId, ownerId)));
 
-        Optional<Booking> lastBooking = bookingRepository.getLastBookingById(itemId);
-        Optional<Booking> nextBooking = bookingRepository.getNextBookingById(itemId);
-
-        ItemDto itemDto = modelMapper.map(item, ItemDto.class);
-
-        lastBooking.ifPresent(booking -> itemDto.setLastBooking(modelMapper.map(booking, BookingDto.class)));
-        nextBooking.ifPresent(booking -> itemDto.setNextBooking(modelMapper.map(booking, BookingDto.class)));
+        ItemDto itemDto = itemMapper.toDto(item);
+        setLastAndNextBooking(itemDto);
         return itemDto;
     }
 
@@ -109,17 +104,32 @@ public class ItemServiceImpl implements ItemService {
 
         return items.stream()
                 .map(item -> {
-                    Optional<Booking> lastBooking = bookingRepository.getLastBookingById(item.getId());
-                    Optional<Booking> nextBooking = bookingRepository.getNextBookingById(item.getId());
-
-                    ItemDto itemDto = modelMapper.map(item, ItemDto.class);
-
-                    lastBooking.ifPresent(booking -> itemDto.setLastBooking(modelMapper.map(booking, BookingDto.class)));
-                    nextBooking.ifPresent(booking -> itemDto.setNextBooking(modelMapper.map(booking, BookingDto.class)));
-
+                    ItemDto itemDto = itemMapper.toDto(item);
+                    setLastAndNextBooking(itemDto);
                     return itemDto;
                 })
                 .toList();
+    }
+
+    private void setLastAndNextBooking(ItemDto itemDto) {
+        List<Booking> bookings = bookingRepository.getBookingsByItemId(itemDto.getId());
+
+        if (bookings.size() > 1) {
+            BookingTimeDto lastBooking = bookings.stream()
+                    .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
+                    .max(Comparator.comparing(Booking::getEnd))
+                    .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
+                    .orElseGet(null);
+
+            BookingTimeDto nextBooking = bookings.stream()
+                    .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                    .sorted(Comparator.comparing(Booking::getStart))
+                    .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
+                    .findFirst().orElseGet(null);
+
+            itemDto.setLastBooking(lastBooking);
+            itemDto.setNextBooking(nextBooking);
+        }
     }
 
     @Override
@@ -136,6 +146,6 @@ public class ItemServiceImpl implements ItemService {
         comment.setItem(booking.getItem());
         comment.setAuthor(booking.getBooker());
 
-        return CommentMapper.toDto(commentRepository.save(comment));
+        return commentMapper.toDto(commentRepository.save(comment));
     }
 }

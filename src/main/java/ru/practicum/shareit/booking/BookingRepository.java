@@ -42,9 +42,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE i.id = :itemId AND bo.id = :bookerId AND b.end < :endBefore")
     Optional<Booking> getBookingByItemIdAndBookerIdAndEndBefore(Long itemId, Long bookerId, LocalDateTime endBefore);
 
-    @Query("SELECT b FROM Booking b WHERE b.item.id = :itemId ORDER BY b.start DESC")
-    Optional<Booking> getLastBookingById(Long itemId);
-
-    @Query("SELECT b FROM Booking b WHERE b.item.id = :itemId AND b.start > CURRENT_TIMESTAMP ORDER BY b.start ASC")
-    Optional<Booking> getNextBookingById(Long itemId);
+    List<Booking> getBookingsByItemId(Long itemId);
 }

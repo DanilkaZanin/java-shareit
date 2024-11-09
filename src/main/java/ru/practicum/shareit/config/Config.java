@@ -5,6 +5,10 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.NotNullCondition;
+import ru.practicum.shareit.comment.CommentMapper;
+import ru.practicum.shareit.comment.CommentMapperImpl;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.ItemMapperImpl;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -31,5 +35,15 @@ public class Config {
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setPropertyCondition(new NotNullCondition());
         return modelMapper;
+    }
+
+    @Bean
+    public CommentMapper commentMapper() {
+        return new CommentMapperImpl();
+    }
+
+    @Bean
+    public ItemMapper itemMapper(ModelMapper modelMapper, CommentMapper commentMapper) {
+        return new ItemMapperImpl(modelMapper, commentMapper);
     }
 }
