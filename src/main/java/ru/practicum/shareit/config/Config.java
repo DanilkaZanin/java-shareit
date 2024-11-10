@@ -3,6 +3,7 @@ package ru.practicum.shareit.config;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.NotNullCondition;
 import ru.practicum.shareit.comment.CommentMapper;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Configuration
 public class Config {
     @Bean
     public Map<Long, Item> items() {
