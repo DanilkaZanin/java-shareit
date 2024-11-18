@@ -12,7 +12,8 @@ import ru.practicum.shareit.comment.*;
 import ru.practicum.shareit.error.exception.NotAvailableException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.error.exception.UnauthorizedException;
-import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
+import ru.practicum.shareit.item.map.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemRequest;
@@ -147,5 +148,10 @@ public class ItemServiceImpl implements ItemService {
         comment.setAuthor(booking.getBooker());
 
         return commentMapper.toDto(commentRepository.save(comment));
+    }
+
+    @Override
+    public List<ItemResponseDto> getItemsByRequestId(Long requestId) {
+        return itemRepository.findItemsByRequestId(requestId);
     }
 }

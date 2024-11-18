@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.NotNullCondition;
 import ru.practicum.shareit.comment.CommentMapper;
 import ru.practicum.shareit.comment.CommentMapperImpl;
-import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.ItemMapperImpl;
+import ru.practicum.shareit.item.map.ItemMapper;
+import ru.practicum.shareit.item.map.ItemMapperImpl;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.map;
 
 
 import lombok.RequiredArgsConstructor;

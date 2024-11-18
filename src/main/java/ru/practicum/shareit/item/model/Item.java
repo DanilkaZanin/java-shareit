@@ -20,4 +20,5 @@ public class Item {
     private Long ownerId;
     @OneToMany(mappedBy = "item")
     private List<Comment> comments;
+    private Long requestId;
 }
