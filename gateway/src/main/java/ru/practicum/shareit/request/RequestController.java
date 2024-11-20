@@ -19,7 +19,7 @@ public class RequestController {
 
     @PostMapping
     public ResponseEntity<Object> addRequest(@Valid @RequestBody ItemRequestRequset request,
-                                     @RequestHeader("X-Sharer-User-Id") long userId) {
+                                             @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Add new request with user id {} and description {}", userId, request.getDescription());
         return requestClient.addRequest(request, userId);
     }
@@ -38,7 +38,7 @@ public class RequestController {
 
     @GetMapping(path = "{requestId}")
     public ResponseEntity<Object> getRequest(@PathVariable("requestId") long requestId,
-                                     @RequestHeader("X-Sharer-User-Id") long userId) {
+                                             @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("Get request with user id {} and request id {}", userId, requestId);
         return requestClient.getRequest(requestId, userId);
     }
