@@ -49,3 +49,9 @@ CREATE TABLE IF NOT EXISTS comments (
     CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
     CONSTRAINT fk_author FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+DELETE FROM users;
+DELETE FROM requests;
+DELETE FROM items;
+DELETE FROM bookings;
+DELETE FROM comments;
