@@ -22,7 +22,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping
     public ItemDto saveItem(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                            @Valid @RequestBody ItemRequest item) {
+                            @RequestBody ItemRequest item) {
         return itemService.save(ownerId, item);
     }
 
