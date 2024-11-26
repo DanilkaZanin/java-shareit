@@ -21,5 +21,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT i FROM Item i LEFT JOIN FETCH i.comments c WHERE i.ownerId = :ownerId")
     List<Item> findItemsByOwnerIdWithComments(Long ownerId);
+
     List<ItemResponseDto> findItemsByRequestId(Long requestId);
 }
