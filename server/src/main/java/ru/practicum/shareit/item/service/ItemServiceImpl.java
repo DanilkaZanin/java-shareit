@@ -12,12 +12,12 @@ import ru.practicum.shareit.comment.*;
 import ru.practicum.shareit.error.exception.NotAvailableException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.error.exception.UnauthorizedException;
-import ru.practicum.shareit.item.dto.ItemResponseDto;
-import ru.practicum.shareit.item.map.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemRequest;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.dto.ItemUpdateRequest;
+import ru.practicum.shareit.item.map.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
@@ -115,23 +115,30 @@ public class ItemServiceImpl implements ItemService {
     private void setLastAndNextBooking(ItemDto itemDto) {
         List<Booking> bookings = bookingRepository.getBookingsByItemId(itemDto.getId());
 
-        if (bookings.size() > 1) {
-            BookingTimeDto lastBooking = bookings.stream()
-                    .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
-                    .max(Comparator.comparing(Booking::getEnd))
-                    .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
-                    .orElseGet(null);
-
-            BookingTimeDto nextBooking = bookings.stream()
-                    .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
-                    .sorted(Comparator.comparing(Booking::getStart))
-                    .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
-                    .findFirst().orElseGet(null);
-
-            itemDto.setLastBooking(lastBooking);
-            itemDto.setNextBooking(nextBooking);
+        if (bookings.isEmpty()) {
+            return;
         }
+
+        itemDto.setLastBooking(findLastBooking(bookings));
+        itemDto.setNextBooking(findNextBooking(bookings));
     }
+
+    private BookingTimeDto findLastBooking(List<Booking> bookings) {
+        return bookings.stream()
+                .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
+                .max(Comparator.comparing(Booking::getEnd))
+                .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
+                .orElse(null);
+    }
+
+    private BookingTimeDto findNextBooking(List<Booking> bookings) {
+        return bookings.stream()
+                .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                .min(Comparator.comparing(Booking::getStart))
+                .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
+                .orElse(null);
+    }
+
 
     @Override
     public CommentDto saveComment(Long bookerId, Long itemId, CommentRequest commentRequest) {

@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
 public interface ItemResponseDto {
-    Integer getId();
+    Long getId();
     String getName();
-    Integer getOwnerId();
+    Long getOwnerId();
 }
