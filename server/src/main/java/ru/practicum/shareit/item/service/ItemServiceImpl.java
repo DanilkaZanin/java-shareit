@@ -115,30 +115,23 @@ public class ItemServiceImpl implements ItemService {
     private void setLastAndNextBooking(ItemDto itemDto) {
         List<Booking> bookings = bookingRepository.getBookingsByItemId(itemDto.getId());
 
-        if (bookings.isEmpty()) {
-            return;
+        if (bookings.size() > 1) {
+            BookingTimeDto lastBooking = bookings.stream()
+                    .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
+                    .max(Comparator.comparing(Booking::getEnd))
+                    .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
+                    .orElseGet(null);
+
+            BookingTimeDto nextBooking = bookings.stream()
+                    .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                    .sorted(Comparator.comparing(Booking::getStart))
+                    .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
+                    .findFirst().orElseGet(null);
+
+            itemDto.setLastBooking(lastBooking);
+            itemDto.setNextBooking(nextBooking);
         }
-
-        itemDto.setLastBooking(findLastBooking(bookings));
-        itemDto.setNextBooking(findNextBooking(bookings));
     }
-
-    private BookingTimeDto findLastBooking(List<Booking> bookings) {
-        return bookings.stream()
-                .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
-                .max(Comparator.comparing(Booking::getEnd))
-                .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
-                .orElse(null);
-    }
-
-    private BookingTimeDto findNextBooking(List<Booking> bookings) {
-        return bookings.stream()
-                .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
-                .min(Comparator.comparing(Booking::getStart))
-                .map(booking -> modelMapper.map(booking, BookingTimeDto.class))
-                .orElse(null);
-    }
-
 
     @Override
     public CommentDto saveComment(Long bookerId, Long itemId, CommentRequest commentRequest) {
